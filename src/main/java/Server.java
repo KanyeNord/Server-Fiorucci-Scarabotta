@@ -9,12 +9,15 @@ import jakarta.websocket.server.ServerEndpoint;
 public class Server {
 	@OnMessage
 	public void visualizzaRichiesta(Session session, String msg) {
+		System.out.println(msg);
 		try {
 			if (session.isOpen()) {
 				session.getBasicRemote().sendText(msg);
+				System.out.println("so felice " + msg);
 			}
 		} catch (IOException e) {
 			try {
+
 				session.close();
 			} catch (IOException el) {
 				// niente
@@ -22,7 +25,7 @@ public class Server {
 		}
 	
 	
-//    	response.getWriter().write("ciao");
+//    	response.getWriter().write("ciao");q
     }
 
 }
