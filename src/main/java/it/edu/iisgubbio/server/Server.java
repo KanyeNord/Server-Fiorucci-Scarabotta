@@ -1,3 +1,4 @@
+package it.edu.iisgubbio.server;
 import java.io.IOException;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.Session;
