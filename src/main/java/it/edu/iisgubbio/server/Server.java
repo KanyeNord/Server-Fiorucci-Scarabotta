@@ -23,6 +23,7 @@ public class Server {
 			if (session.isOpen()) {
 				//session.getBasicRemote().sendText(msg);
 				String vAccesso[] = msg.split("\\|");
+				if(vAccesso[0].equals("A")){
 				String username = vAccesso[1];
 				String pwd = vAccesso[2];
 				System.out.println("nome= "+username);
@@ -32,6 +33,7 @@ public class Server {
 						System.out.println("ENTRATO");
 						accesso=true;
 						aUtenti.add(username);
+//						aSessione.add(session);
 					}else {
 						System.out.println("NON ENTRATO");
 					}
@@ -39,7 +41,8 @@ public class Server {
 					System.out.println("nome errato");
 					
 				}
-				if(accesso) {
+				}else { 
+					if(accesso && vAccesso[0].equals("M")) {
 					String vMessaggio[] = msg.split("\\|");
 					String nome = vMessaggio[1];
 					String timeStamp = vMessaggio[2];
@@ -50,6 +53,7 @@ public class Server {
 //					"M|nome|ts|paese|mt|testo"
 					
 				}
+			}
 			}
 //		} catch (IOException e) {
 //			try {
@@ -67,6 +71,7 @@ public class Server {
 	public void chiudiConnessione(Session session) {
 		for (int i = 0;i<aSessione.size();i++) {
 			if(session == aSessione.get(i)) {
+				System.out.println(aUtenti.get(i)+" si è disconnesso");
 				aSessione.remove(i);
 				aUtenti.remove(i);
 			}
