@@ -33,6 +33,7 @@ public class Server {
 						System.out.println("ENTRATO");
 						accesso=true;
 						aUtenti.add(username);
+						System.out.println(broadcast());
 //						aSessione.add(session);
 					}else {
 						System.out.println("NON ENTRATO");
@@ -67,11 +68,18 @@ public class Server {
 	
 //    	response.getWriter().write("ciao");q
     }
+	public String broadcast() {
+		String nomiUtenti="U";
+		for(int i=0; i<aUtenti.size();i++) {
+			nomiUtenti+=aUtenti.get(i)+"|";
+		}
+		return nomiUtenti;
+	}
 	@OnClose
 	public void chiudiConnessione(Session session) {
+		System.out.println("disconnesso");
 		for (int i = 0;i<aSessione.size();i++) {
 			if(session == aSessione.get(i)) {
-				System.out.println(aUtenti.get(i)+" si è disconnesso");
 				aSessione.remove(i);
 				aUtenti.remove(i);
 			}
