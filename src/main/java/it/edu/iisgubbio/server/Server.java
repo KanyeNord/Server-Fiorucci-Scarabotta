@@ -1,6 +1,8 @@
 package it.edu.iisgubbio.server;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnMessage;
@@ -11,19 +13,24 @@ import jakarta.websocket.server.ServerEndpoint;
 @ServerEndpoint("/nino")
 
 public class Server {
-	
-	ArrayList<String> aUtenti = new ArrayList<String>();
-	ArrayList<Session> aSessione = new ArrayList<Session>();
+	//TODO risposta messaggi broadcast
+	//TODO controllo se uno non indenta la risposta correttamente
+	//TODO fa le robe come cristo comanda
+	static ArrayList<String> aUtenti = new ArrayList<String>();
+	static ArrayList<Session> aSessione = new ArrayList<Session>();
+	static Map<Session, Boolean> mappaSessioni = new HashMap<>();
 	@OnMessage
 	public void visualizzaRichiesta(Session session, String msg) {
-		System.out.println(msg);
-		boolean accesso = false;
-		
+		System.out.println("questo, brutto cattivo,Daniele Fiorucci, nato il 20/05/2007 è il messaggio, NON IL BROADCAAST:" + msg);
+//		boolean accesso = false;
+		if(mappaSessioni.get(session)==null) {
+			mappaSessioni.put(session, false);
+		}
 		//try {
 			if (session.isOpen()) {
-				//session.getBasicRemote().sendText(msg);
+				
 				String vAccesso[] = msg.split("\\|");
-				if(vAccesso[0].equals("A")){
+				if(vAccesso[0].equals("A") && mappaSessioni.get(session)==false){
 				String username = vAccesso[1];
 				String pwd = vAccesso[2];
 				System.out.println("nome= "+username);
@@ -31,10 +38,18 @@ public class Server {
 				if(username.toUpperCase().equals(username)) {
 					if(pwd.charAt(1)=='l') {
 						System.out.println("ENTRATO");
-						accesso=true;
+//						accesso=true;
 						aUtenti.add(username);
-						System.out.println(broadcast());
-//						aSessione.add(session);
+						aSessione.add(session);
+						mappaSessioni.put(session, true);
+						try {
+							System.out.println("utenti nella sessione" + aSessione.size());
+							for(int i = 0; i<aSessione.size();i++) {
+								aSessione.get(i).getBasicRemote().sendText(broadcast());
+							}
+//						session.getBasicRemote().sendText(broadcast());
+						} catch(IOException e) {System.out.println(e);}
+//						System.out.println(broadcast());
 					}else {
 						System.out.println("NON ENTRATO");
 					}
@@ -43,7 +58,7 @@ public class Server {
 					
 				}
 				}else { 
-					if(accesso && vAccesso[0].equals("M")) {
+					if(mappaSessioni.get(session) && vAccesso[0].equals("M")) {
 					String vMessaggio[] = msg.split("\\|");
 					String nome = vMessaggio[1];
 					String timeStamp = vMessaggio[2];
@@ -71,18 +86,27 @@ public class Server {
 	public String broadcast() {
 		String nomiUtenti="U";
 		for(int i=0; i<aUtenti.size();i++) {
-			nomiUtenti+=aUtenti.get(i)+"|";
+			 nomiUtenti+="|" + aUtenti.get(i);
+			 System.out.println("nomi utenti: " + nomiUtenti);
+			 System.out.println("lista utenti: " + aUtenti);
+		
 		}
 		return nomiUtenti;
 	}
 	@OnClose
 	public void chiudiConnessione(Session session) {
-		System.out.println("disconnesso");
-		for (int i = 0;i<aSessione.size();i++) {
+//		System.out.println("disconnesso " + aUtenti.get(i));
+		int i;
+		for (i = 0;i<aSessione.size();i++) {
 			if(session == aSessione.get(i)) {
+				System.out.println(aUtenti.get(i) + " si è disconnesso");
+				mappaSessioni.remove(aSessione.get(i));
 				aSessione.remove(i);
 				aUtenti.remove(i);
+				break;
 			}
+			
 		}
+
 	}
 }
