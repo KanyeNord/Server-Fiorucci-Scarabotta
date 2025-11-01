@@ -119,20 +119,12 @@ public class Server {
                                     }
                                     System.out.println("FORMATO DATA ERRATO");
                                 }
+                                
                                 String codiciPaesi[] = Locale.getISOCountries();
                                 for (int i = 0; i < codiciPaesi.length; i++) {
                                     if (codiciPaesi[i].equals(paese)) {
                                     }
 
-                                }
-
-                                if (!paese.equals("IT")) {
-                                    try {
-                                        session.close();
-                                    } catch (IOException e) {
-                                        System.out.println(e);
-                                    }
-                                    System.out.println("IL TUO PAESE NON È BENVENUTO NELLA NOSTRA CHAT");
                                 }
 
                                 if (!mediaType.equals("text/plain")) {
