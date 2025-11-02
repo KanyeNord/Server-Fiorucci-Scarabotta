@@ -30,3 +30,8 @@ window > preferences > Java e cliccare su Installed JREs, poi una volta nella sc
 
 Per installare il server bisogna andare sulla tabella Servers nella sezione in basso di eclipse (se non presente aggiungerla da Window > Show View) e cliccare su "No servers are available. Click this link to create a new server..."
 selezionare il server "Tomcat v10.1 Server" cliccare su next, poi su Browse... e selezionare la cartella in cui è installato Tomcat, infine cliccare su finish.
+
+### Come accedere alla chat
+
+Per superare il login ed accedere alla chat è necessario scrivere il proprio username in caps lock, e la propria password deve avere il carattere 'l' in seconda posizione.
+Con queste accortezze si potrà superare la fase di login e chattare insieme agli altri utenti.
