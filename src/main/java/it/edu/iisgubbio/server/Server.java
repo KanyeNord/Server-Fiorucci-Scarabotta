@@ -121,10 +121,20 @@ public class Server {
                                 }
                                 
                                 String codiciPaesi[] = Locale.getISOCountries();
+                                boolean paeseGiusto=false;
                                 for (int i = 0; i < codiciPaesi.length; i++) {
                                     if (codiciPaesi[i].equals(paese)) {
+                                        paeseGiusto=true;
+                                        break;
                                     }
-
+                                }
+                                if(!paeseGiusto) {
+                                    try {
+                                        session.close();
+                                    } catch (IOException e) {
+                                        System.out.println(e);
+                                    }
+                                    System.out.println("PAESE ERRATO");
                                 }
 
                                 if (!mediaType.equals("text/plain")) {
