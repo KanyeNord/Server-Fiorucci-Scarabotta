@@ -1,7 +1,7 @@
 package it.edu.iisgubbio.server;
 
 import java.io.IOException;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,19 +38,17 @@ public class Server {
                             System.out.println("nome: " + username);
                             System.out.println("password: " + pwd);
                             if (username.toUpperCase().equals(username)) {
-                                if (pwd.charAt(1) == 'l') {
+                                if (pwd.length()>=2 && pwd.charAt(1) == 'l') {
                                     System.out.println("ENTRATO");
                                     aUtenti.add(username);
                                     aSessione.add(session);
                                     mappaSessioni.put(session, true);
                                     try {
-                                        session.getBasicRemote().sendText("R|ok");
-                                        for (int i = 0; i < aSessione.size(); i++) {
-                                            aSessione.get(i).getBasicRemote().sendText(listaUtenti());
-                                        }
-                                    } catch (IOException e) {
-                                        System.out.println(e);
-                                    }
+										session.getBasicRemote().sendText("R|ok");
+									} catch (IOException e) {
+	                                    System.out.println(e);
+	                                }
+                                    broadcast();
                                 } else {
                                     try {
                                         session.getBasicRemote().sendText("R|no");
@@ -93,7 +91,6 @@ public class Server {
                                 String paese = vMessaggio[3];
                                 String mediaType = vMessaggio[4];
                                 String testo = vMessaggio[5];
-                                //"M|nome|ts|paese|mt|testo"
 
                                 for (int i = 0; i < aSessione.size(); i++) {
                                     if (session == aSessione.get(i)) {
@@ -110,7 +107,7 @@ public class Server {
                                 }
 
                                 try {
-                                    Instant.parse(timeStamp);
+                                    LocalDateTime.parse(timeStamp);
                                 } catch (DateTimeParseException i) {
                                     try {
                                         session.close();
@@ -151,7 +148,7 @@ public class Server {
                                     } catch (IOException e) {
                                         System.out.println(e);
                                     }
-                                    System.out.println("TESTO VUOTO");
+                                    System.out.println("TESTO TROPPO LUNGO, NON ABBIAMO MEMORIA PER MESSAGGI LUNGHI");
                                 }
 
                                 try {
@@ -207,6 +204,17 @@ public class Server {
         }
         return nomiUtenti;
     }
+    public void broadcast() {
+    	try {
+            for (int i = 0; i < aSessione.size(); i++) {
+                aSessione.get(i).getBasicRemote().sendText(listaUtenti());
+            }
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    
+    	
+    }
 
     @OnClose
     public void chiudiConnessione(Session session) {
@@ -216,6 +224,7 @@ public class Server {
                 mappaSessioni.remove(aSessione.get(i));
                 aSessione.remove(i);
                 aUtenti.remove(i);
+                broadcast();
                 break;
             }
         }
